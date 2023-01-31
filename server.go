@@ -47,6 +47,7 @@ func sendProxyResponse(write http.ResponseWriter, resp *http.Response) {
 		panic(err)
 	}
 
+	write.Header().Set("Content-Type", "application/json")
 	write.WriteHeader(resp.StatusCode)
 	_, _ = write.Write(bodyBytes)
 }
