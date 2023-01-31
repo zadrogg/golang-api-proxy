@@ -24,7 +24,6 @@ func main() {
 	http.HandleFunc("/", proxyServer)
 	// запускаем сервер и пишем логи о ошибках
 	errorHandler(http.ListenAndServe(server, nil))
-
 }
 
 func errorHandler(error error) {
@@ -32,16 +31,3 @@ func errorHandler(error error) {
 		_, _ = os.Stderr.WriteString(error.Error())
 	}
 }
-
-//func sendRequest(address string) {
-//	//client := http.Client{}
-//	addressString := []string{address}
-//	body, _ := json.Marshal(addressString)
-//	//fmt.Println(string(body))
-//	response, err := client.PostForm("https://cleaner.dadata.ru/api/v1/clean/address", string(body))
-//	//if err != nil {
-//	//	fmt.Println(err)
-//	//	return
-//	//}
-//	//fmt.Println(response)
-//}
