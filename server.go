@@ -2,30 +2,29 @@ package main
 
 import (
 	"io"
+	"log"
 	"net/http"
-	"net/url"
 )
 
 func proxyServer(write http.ResponseWriter, request *http.Request) {
-	params, err := prepareRequest(paramRequest(request), request)
+	params, err := prepareRequest(request)
 	if err != nil {
 		return
 	}
 
-	setCache()
-
-	sendProxyResponse(write, sendRequest(params))
+	setCache(write, params)
 }
 
-func paramRequest(request *http.Request) string {
-	queryUrl, _ := url.Parse(request.RequestURI)
-	values := queryUrl.Query()
+func prepareRequest(request *http.Request) (*http.Request, error) {
+	proxyRequest, err := http.NewRequest("POST", request.Header.Get("Proxy-Url"), request.Body)
+	proxyRequest.Header.Set("X-Secret", request.Header.Get("X-Secret"))
+	proxyRequest.Header.Set("Authorization", request.Header.Get("Authorization"))
 
-	return values.Get("url")
-}
+	if err != nil {
+		log.Fatal(err)
+	}
 
-func prepareRequest(url string, request *http.Request) (*http.Request, error) {
-	return http.NewRequest("POST", url, request.Body)
+	return proxyRequest, nil
 }
 
 func sendRequest(request *http.Request) *http.Response {

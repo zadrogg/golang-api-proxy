@@ -18,12 +18,16 @@ func init() {
 }
 
 func main() {
-	// получаем переменную сервера
-	server := os.Getenv("SERVER")
+	conf := getConfig()
+	// открываем соединение с хранением кэша (storage Example: redis)
+	//if conf.Cache.sign == true {
+	//	storage := getConnection
+	//	defer storage.Close()
+	//}
 	// определяем какие роуты будет принимать прокси
 	http.HandleFunc("/", proxyServer)
 	// запускаем сервер и пишем логи о ошибках
-	errorHandler(http.ListenAndServe(server, nil))
+	errorHandler(http.ListenAndServe(conf.Server.url, nil))
 }
 
 func errorHandler(error error) {
